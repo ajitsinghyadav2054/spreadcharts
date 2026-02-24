@@ -1,0 +1,18 @@
+export const COT_METRICS = [
+    { id: 'Open_Interest_All', name: 'Open Interest (All)' },
+    { id: 'Producer_Long_All', name: 'Producer Long (All)' },
+    { id: 'Producer_Short_All', name: 'Producer Short (All)' },
+    { id: 'Swap_Long_All', name: 'Swap Long (All)' },
+    { id: 'Swap_Short_All', name: 'Swap Short (All)' },
+    { id: 'Swap_Spread_All', name: 'Swap Spread (All)' },
+    { id: 'Managed_Money_Long_All', name: 'Managed Money Long (All)' },
+    { id: 'Managed_Money_Short_All', name: 'Managed Money Short (All)' },
+    { id: 'Managed_Money_Spread_All', name: 'Managed Money Spread (All)' },
+    { id: 'Other_Rept_Long_All', name: 'Other Rept Long (All)' },
+    { id: 'Other_Rept_Short_All', name: 'Other Rept Short (All)' },
+    { id: 'Other_Rept_Spread_All', name: 'Other Rept Spread (All)' },
+    { id: 'Tot_Rept_Long_All', name: 'Tot Rept Long (All)' },
+    { id: 'Tot_Rept_Short_All', name: 'Tot Rept Short (All)' },
+    { id: 'NonRept_Long_All', name: 'NonRept Long (All)' },
+    { id: 'NonRept_Short_All', name: 'NonRept Short (All)' },
+];
