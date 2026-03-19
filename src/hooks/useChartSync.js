@@ -152,12 +152,14 @@ export function useChartSync(
                 isCrosshairSyncing.current = true;
 
                 if (!param || !param.time) {
-                    if (mainSeries) clearCrosshairOn(mainChart);
+                    // Cursor left sub-chart — clear crosshair on main + sibling subs
+                    clearCrosshairOn(mainChart);
                     subs.forEach((other, j) => {
                         if (j !== idx) clearCrosshairOn(other.chart);
                     });
                     if (onCrosshairTimeChange) onCrosshairTimeChange(null);
                 } else {
+                    // Cursor on sub-chart — sync to main chart + sibling subs via time
                     if (mainSeries) syncCrosshairTo(mainChart, mainSeries, param.time);
                     subs.forEach((other, j) => {
                         if (j !== idx) syncCrosshairTo(other.chart, other.series, param.time);

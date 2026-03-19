@@ -67,8 +67,6 @@ export default function ChartContainer({ instrumentId, chartType = 'candlestick'
     const [subCharts, setSubCharts] = useState([]);
     // Shared Zoom Box State (for syncing the blue shadow)
     const [zoomBox, setZoomBox] = useState(null);
-    // Shared crosshair X position (for CSS overlay line spanning both charts)
-    const [crosshairX, setCrosshairX] = useState(null);
 
     const subChartRefs = useMemo(() => subCharts.map(() => createRef()), [subCharts.length]);
     const subSeriesRefs = useMemo(() => subCharts.map(() => createRef()), [subCharts.length]);
@@ -238,11 +236,6 @@ export default function ChartContainer({ instrumentId, chartType = 'candlestick'
             {/* Chart Split Area */}
             <div
                 ref={containerRef}
-                onMouseMove={(e) => {
-                    const rect = containerRef.current?.getBoundingClientRect();
-                    if (rect) setCrosshairX(e.clientX - rect.left);
-                }}
-                onMouseLeave={() => setCrosshairX(null)}
                 style={{
                     flex: 1,
                     display: 'flex',
@@ -251,19 +244,6 @@ export default function ChartContainer({ instrumentId, chartType = 'candlestick'
                     overflow: 'hidden'
                 }}
             >
-                {/* CSS Overlay Crosshair Line — spans both charts */}
-                {crosshairX !== null && hasSubCharts && (
-                    <div style={{
-                        position: 'absolute',
-                        left: crosshairX,
-                        top: 0,
-                        width: '1px',
-                        height: '100%',
-                        background: '#ef5350',
-                        pointerEvents: 'none',
-                        zIndex: 40,
-                    }} />
-                )}
                 {/* Top Section: Main Chart */}
                 <div style={{
                     height: `${currentSplit}%`,

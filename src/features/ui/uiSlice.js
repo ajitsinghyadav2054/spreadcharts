@@ -14,9 +14,12 @@ const initialState = {
         { id: 'tab-1', name: 'Chart 1', instrumentId: null, chartType: 'candlestick', sodSeries: null },
     ],
     activeTabId: 'tab-1',
-    activeSection: 'cftc',    // 'cftc' | 'sod'
+    activeSection: 'cftc',    // 'cftc' | 'sod' | 'cocoa'
     sodDashboard: {           // SOD section owns its own state
         sodSeries: null,      // array of { columnId, label, yearlyData } once generated
+    },
+    cocoaDashboard: {         // Cocoa section owns its own state
+        sodSeries: null,
     },
     sidebarOpen: true,
     drawingMode: null,
@@ -80,11 +83,12 @@ const uiSlice = createSlice({
 
         // Setup a multi-series chart
         setTabMultiChart(state, action) {
-            const { tabId, series } = action.payload;
+            const { tabId, series, product } = action.payload;
             const tab = state.tabs.find((t) => t.id === tabId);
             if (tab) {
                 tab.chartType = 'multiline';
                 tab.series = series;
+                tab.product = product || tab.product || '';
                 // Set instrumentId to first series so TabPanel renders the chart view
                 if (series.length > 0) {
                     tab.instrumentId = series[0].id;
@@ -123,6 +127,11 @@ const uiSlice = createSlice({
         // Store the generated SOD series for the standalone SOD dashboard
         setSodDashboard(state, action) {
             state.sodDashboard.sodSeries = action.payload; // null to clear
+        },
+
+        // Store the generated series for the Cocoa dashboard
+        setCocoaDashboard(state, action) {
+            state.cocoaDashboard.sodSeries = action.payload; // null to clear
         },
 
         // Toggle sidebar visibility
@@ -164,6 +173,7 @@ export const {
     setTabSodSeries,
     setActiveSection,
     setSodDashboard,
+    setCocoaDashboard,
     toggleSidebar,
     setDrawingMode,
     togglePLCalculator,
@@ -178,6 +188,7 @@ export const selectActiveTab = (state) =>
     state.ui.tabs.find((t) => t.id === state.ui.activeTabId);
 export const selectActiveSection = (state) => state.ui.activeSection;
 export const selectSodDashboard = (state) => state.ui.sodDashboard;
+export const selectCocoaDashboard = (state) => state.ui.cocoaDashboard;
 export const selectSidebarOpen = (state) => state.ui.sidebarOpen;
 export const selectDrawingMode = (state) => state.ui.drawingMode;
 export const selectPLCalculatorOpen = (state) => state.ui.plCalculatorOpen;

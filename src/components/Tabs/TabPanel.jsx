@@ -5,6 +5,7 @@ import InstrumentInput from '../Input/InstrumentInput';
 import IntervalSelector from '../Input/IntervalSelector';
 import RollMethodSelector from '../Input/RollMethodSelector';
 import CftcSeasonalityChart from '../Chart/CftcSeasonalityChart';
+import CftcQuickSelector from '../Input/CftcQuickSelector';
 import { setTabSodSeries } from '../../features/ui/uiSlice';
 
 // ============================================================
@@ -113,9 +114,12 @@ export default function TabPanel() {
                             background: '#16213e',
                             borderBottom: '1px solid #2a2a4a',
                         }}>
-                            <InstrumentInput tabId={tab.id} currentInstrument={tab.instrumentId} />
-                            <IntervalSelector tabId={tab.id} />
-                            <RollMethodSelector />
+                            {tab.chartType === 'multiline'
+                                ? <CftcQuickSelector tab={tab} />
+                                : <InstrumentInput tabId={tab.id} currentInstrument={tab.instrumentId} />
+                            }
+                            {tab.chartType !== 'multiline' && <IntervalSelector tabId={tab.id} />}
+                            {tab.chartType !== 'multiline' && <RollMethodSelector />}
 
                             <div style={{
                                 marginLeft: 'auto',

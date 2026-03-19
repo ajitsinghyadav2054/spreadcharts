@@ -2,10 +2,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-// API BASE should handle relative path in prod or dev
-const API_URL = import.meta.env.PROD
-    ? '/api/auth'
-    : 'http://localhost:3002/api/auth';
+// Frontend is served by Express, so always use relative path
+const API_URL = '/api/auth';
 
 // Async Thunk for Login
 export const loginUser = createAsyncThunk(

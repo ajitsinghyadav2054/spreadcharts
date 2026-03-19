@@ -4,6 +4,8 @@ import Header from './Header';
 import TabBar from '../Tabs/TabBar';
 import TabPanel from '../Tabs/TabPanel';
 import SodDashboard from '../Tabs/SodDashboard';
+import CocoaDashboard from '../Tabs/CocoaDashboard';
+import OIDashboard from '../Tabs/OIDashboard';
 import { selectActiveSection } from '../../features/ui/uiSlice';
 
 // ============================================================
@@ -41,9 +43,15 @@ export default function AppShell() {
                 overflow: 'hidden',
                 minWidth: 0,
             }}>
-                {activeSection === 'sod' ? (
+                {activeSection === 'cocoa' ? (
+                    /* ── Cocoa Section ── */
+                    <CocoaDashboard />
+                ) : activeSection === 'sod' ? (
                     /* ── SOD Section ── */
                     <SodDashboard />
+                ) : activeSection === 'oi' ? (
+                    /* ── OI Screener Section ── */
+                    <OIDashboard />
                 ) : (
                     /* ── CFTC Section (default) ── */
                     <>

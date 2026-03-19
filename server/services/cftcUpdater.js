@@ -4,11 +4,18 @@ import pool from '../db.js';
 
 const CFTC_URL = 'https://www.cftc.gov/dea/newcot/f_disagg.txt';
 
-const MARKET_TO_TABLE = {
+export const MARKET_TO_TABLE = {
     'COFFEE C - ICE FUTURES U.S.': 'coffee_c',
     'COCOA - ICE FUTURES U.S.': 'cocoa',
     'COTTON NO. 2 - ICE FUTURES U.S.': 'cotton_no_2',
     'SUGAR NO. 11 - ICE FUTURES U.S.': 'sugar_no_11',
+    'ROUGH RICE - CHICAGO BOARD OF TRADE': 'rough_rice',
+    'BUTTER (CASH SETTLED) - CHICAGO MERCANTILE EXCHANGE': 'butter_cash_settled',
+    'MILK, Class III - CHICAGO MERCANTILE EXCHANGE': 'milk_class_3',
+    'CHEESE (CASH-SETTLED) - CHICAGO MERCANTILE EXCHANGE': 'cheese_cash_settled',
+    'NON FAT DRY MILK - CHICAGO MERCANTILE EXCHANGE': 'non_fat_dry_milk',
+    'CME MILK IV - CHICAGO MERCANTILE EXCHANGE': 'cme_milk_4',
+    'FRZN CONCENTRATED ORANGE JUICE - ICE FUTURES U.S.': 'frzn_concentrated_orange_juice'
 };
 
 // ── Complete 188-column positional mapping (CSV col index → DB column name) ──
@@ -246,7 +253,7 @@ const FLOAT_COLS = new Set([
     'conc_net_le_8_tdr_long_other', 'conc_net_le_8_tdr_short_other',
 ]);
 
-function normalizeDate(val) {
+export function normalizeDate(val) {
     if (!val) return null;
     const str = String(val).trim();
     if (str.match(/^\d{4}-\d{2}-\d{2}/)) return str.substring(0, 10);
@@ -257,7 +264,7 @@ function normalizeDate(val) {
 }
 
 /** Parse one raw CSV row into a fully typed data object using ALL_DB_COLS. */
-function parseRow(row) {
+export function parseRow(row) {
     const data = {};
     for (let i = 0; i < ALL_DB_COLS.length; i++) {
         const dbCol = ALL_DB_COLS[i];
@@ -310,8 +317,21 @@ export async function updateMarketData() {
             const res = await pool.query(
                 `SELECT report_date_as_mm_dd_yyyy FROM ${table} ORDER BY report_date_as_mm_dd_yyyy DESC LIMIT 200`
             );
+            // res.rows[0].report_date_as_mm_dd_yyyy might be a Javascript Date Object because of the DB driver,
+            // or it might just be a string. By converting it properly to 'YYYY-MM-DD', we avoid timezone shift bugs
+            // that caused 2026-03-03 to turn into 2026-03-02
             existingDates[table] = new Set(
-                res.rows.map(r => new Date(r.report_date_as_mm_dd_yyyy).toISOString().split('T')[0])
+                res.rows.map(r => {
+                    const dbVal = r.report_date_as_mm_dd_yyyy;
+                    if (dbVal instanceof Date) {
+                        return dbVal.toISOString().split('T')[0];
+                    }
+                    if (typeof dbVal === 'string') {
+                        // Sometimes '2026-03-03T00:00:00.000Z'
+                        return dbVal.split('T')[0];
+                    }
+                    return dbVal; // fallback
+                })
             );
         }
 

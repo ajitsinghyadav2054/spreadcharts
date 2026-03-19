@@ -23,9 +23,23 @@ const NAV_ITEMS = [
     {
         id: 'sod',
         icon: '📅',
-        label: 'SOD',
+        label: 'Seasonal CFTC',
         activeColor: '#26a69a',
         activeBg: 'rgba(38, 166, 154, 0.15)',
+    },
+    {
+        id: 'cocoa',
+        icon: '🍫',
+        label: 'Cocoa',
+        activeColor: '#8d6e63',
+        activeBg: 'rgba(141, 110, 99, 0.15)',
+    },
+    {
+        id: 'oi',
+        icon: '📈',
+        label: 'OI',
+        activeColor: '#4a90d9',
+        activeBg: 'rgba(74, 144, 217, 0.15)',
     },
 ];
 

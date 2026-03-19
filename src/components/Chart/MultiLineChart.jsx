@@ -71,7 +71,7 @@ export default function MultiLineChart({
                 scaleMargins: { top: 0.1, bottom: 0.1 },
             },
             crosshair: {
-                mode: 1,
+                mode: 0, // CrosshairMode.Normal — Magnet mode (1) ignores horzLine.visible
                 vertLine: {
                     color: '#ef5350',
                     width: 1,
@@ -79,10 +79,8 @@ export default function MultiLineChart({
                     labelBackgroundColor: '#ef5350',
                 },
                 horzLine: {
-                    color: '#ef5350',
-                    width: 1,
-                    style: 2,
-                    labelBackgroundColor: '#ef5350',
+                    visible: false,
+                    labelVisible: false,
                 },
             },
             handleScale: {
@@ -113,10 +111,10 @@ export default function MultiLineChart({
             const series = chart.addSeries(LineSeries, {
                 color,
                 lineWidth: 2,
-                title: config.label || config.id,
+                title: '',
                 crosshairMarkerVisible: true,
-                lastValueVisible: true,
-                priceLineVisible: false, // Clean up UI
+                lastValueVisible: false,   // Disabled — we use createPriceLine instead
+                priceLineVisible: false,   // Disable built-in price line
                 priceScaleId: scaleId,
             });
 
@@ -161,13 +159,24 @@ export default function MultiLineChart({
             lineData.forEach(item => uniqueMap.set(item.time, item));
             lineData = Array.from(uniqueMap.values()).sort((a, b) => a.time - b.time);
 
-            series.setData(lineData);
-
             // Capture last value
-            if (lineData.length > 0) {
-                newLastValues[config.id] = lineData[lineData.length - 1].value;
-            } else {
-                newLastValues[config.id] = null;
+            series.setData(lineData);
+            const lastVal = lineData.length > 0 ? lineData[lineData.length - 1].value : null;
+            newLastValues[config.id] = lastVal;
+
+            // Show Y-axis price label WITHOUT any horizontal line:
+            // lineVisible:false hides the horizontal line; axisLabelVisible:true keeps the Y-axis box.
+            // This is confirmed in the v5.1.0 source: CustomPriceLinePaneView checks !lineOptions.lineVisible
+            if (lastVal !== null) {
+                series.createPriceLine({
+                    price: lastVal,
+                    color,
+                    lineWidth: 1,
+                    lineStyle: 0,
+                    lineVisible: false,
+                    axisLabelVisible: true,
+                    title: '',
+                });
             }
 
             seriesList.push({ series, config, color });

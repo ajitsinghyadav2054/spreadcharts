@@ -1,6 +1,5 @@
-// Use relative path in production (Nginx will proxy /api -> localhost:3002)
-// In dev, use the hardcoded localhost URL
-const API_BASE_URL = import.meta.env.PROD ? '/api' : 'http://localhost:3002/api';
+// Frontend is now served by Express, so always use relative path
+const API_BASE_URL = '/api';
 
 // Helper to get auth headers
 const getAuthHeaders = () => {
@@ -38,6 +37,84 @@ export const fetchCftcData = async (params = {}) => {
         return result.data || [];
     } catch (error) {
         console.error('Failed to fetch CFTC data:', error);
+        throw error;
+    }
+};
+
+export const fetchCocoaBagsData = async (seriesLabel, start = null, end = null, table = null) => {
+    try {
+        const query = new URLSearchParams();
+        if (seriesLabel) query.append('series', seriesLabel);
+        if (start) query.append('from', start);
+        if (end) query.append('to', end);
+        if (table) query.append('table', table);
+
+        const res = await fetch(`${API_BASE_URL}/cocoa-bags?${query}`, {
+            headers: getAuthHeaders()
+        });
+        if (!res.ok) {
+            handleAuthError(res.status);
+            throw new Error(`API error: ${res.statusText}`);
+        }
+        const data = await res.json();
+        return data.data || [];
+    } catch (error) {
+        console.error('Failed to fetch Cocoa Bags data:', error);
+        throw error;
+    }
+};
+
+export const fetchLondonOriginData = async (ageCategory = 'TOTAL Valid', metric = 'total_mt') => {
+    try {
+        const query = new URLSearchParams();
+        query.append('ageCategory', ageCategory);
+        query.append('metric', metric);
+
+        const res = await fetch(`${API_BASE_URL}/cocoa-london-origin?${query}`, {
+            headers: getAuthHeaders()
+        });
+        if (!res.ok) {
+            handleAuthError(res.status);
+            throw new Error(`API error: ${res.statusText}`);
+        }
+        const data = await res.json();
+        return data.data || [];
+    } catch (error) {
+        console.error('Failed to fetch London Origin data:', error);
+        throw error;
+    }
+};
+
+export const fetchIvoryArrivalsData = async () => {
+    try {
+        const res = await fetch(`${API_BASE_URL}/cocoa-arrivals/ivory`, {
+            headers: getAuthHeaders()
+        });
+        if (!res.ok) {
+            handleAuthError(res.status);
+            throw new Error(`API error: ${res.statusText}`);
+        }
+        const data = await res.json();
+        return data.data || [];
+    } catch (error) {
+        console.error('Failed to fetch Ivory Arrivals data:', error);
+        throw error;
+    }
+};
+
+export const fetchCocoaRatiosData = async (category) => {
+    try {
+        const res = await fetch(`${API_BASE_URL}/cocoa-product-ratios?category=${category}`, {
+            headers: getAuthHeaders()
+        });
+        if (!res.ok) {
+            handleAuthError(res.status);
+            throw new Error(`API error: ${res.statusText}`);
+        }
+        const data = await res.json();
+        return data.data || [];
+    } catch (error) {
+        console.error('Failed to fetch Cocoa Ratios data:', error);
         throw error;
     }
 };
@@ -126,5 +203,22 @@ export const fetchColumns = async () => {
     } catch (error) {
         console.error('Error fetching columns:', error);
         return [];
+    }
+};
+
+export const fetchOIScreener = async () => {
+    try {
+        const res = await fetch(`${API_BASE_URL}/oi-screener`, {
+            headers: getAuthHeaders()
+        });
+        if (!res.ok) {
+            handleAuthError(res.status);
+            throw new Error(`API error: ${res.statusText}`);
+        }
+        const data = await res.json();
+        return data;
+    } catch (error) {
+        console.error('Failed to fetch OI screener data:', error);
+        throw error;
     }
 };

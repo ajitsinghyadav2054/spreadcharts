@@ -12,8 +12,9 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "^2.11.2",
-        "axios": "^1.13.5",
+        "axios": "^1.13.6",
         "bcryptjs": "^3.0.3",
+        "chokidar": "^5.0.0",
         "cors": "^2.8.6",
         "csv-parse": "^6.1.0",
         "csv-parser": "^3.2.0",
@@ -27,7 +28,8 @@
         "react": "^19.2.0",
         "react-dom": "^19.2.0",
         "react-redux": "^9.2.0",
-        "react-router-dom": "^7.13.0"
+        "react-router-dom": "^7.13.0",
+        "tesseract.js": "^7.0.0"
     },
     "devDependencies": {
         "@eslint/js": "^9.39.1",
