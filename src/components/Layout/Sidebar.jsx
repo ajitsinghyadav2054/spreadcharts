@@ -21,6 +21,27 @@ const NAV_ITEMS = [
         activeBg: 'rgba(229, 62, 62, 0.15)',
     },
     {
+        id: 'ice_charts',
+        icon: '🧊',
+        label: 'ICE',
+        activeColor: '#00BFA6',
+        activeBg: 'rgba(0, 191, 166, 0.15)',
+    },
+    {
+        id: 'cftc_weekly',
+        icon: '📋',
+        label: 'Change in CFTC',
+        activeColor: '#f59e0b',
+        activeBg: 'rgba(245, 158, 11, 0.15)',
+    },
+    {
+        id: 'ice',
+        icon: '📊',
+        label: 'Change in ICE',
+        activeColor: '#10b981',
+        activeBg: 'rgba(16, 185, 129, 0.15)',
+    },
+    {
         id: 'sod',
         icon: '📅',
         label: 'Seasonal CFTC',
@@ -35,11 +56,39 @@ const NAV_ITEMS = [
         activeBg: 'rgba(141, 110, 99, 0.15)',
     },
     {
+        id: 'opening_variation',
+        icon: '⚡',
+        label: 'Opening Var.',
+        activeColor: '#f59e0b',
+        activeBg: 'rgba(245, 158, 11, 0.15)',
+    },
+    {
         id: 'oi',
         icon: '📈',
-        label: 'OI',
+        label: 'Daily OI',
         activeColor: '#4a90d9',
         activeBg: 'rgba(74, 144, 217, 0.15)',
+    },
+    {
+        id: 'historic_oi',
+        icon: '⏳',
+        label: 'Historic OI',
+        activeColor: '#ab47bc',
+        activeBg: 'rgba(171, 71, 188, 0.15)',
+    },
+    {
+        id: 'rolling_correlation',
+        icon: '〜',
+        label: 'Rolling Corr.',
+        activeColor: '#3dcece',
+        activeBg: 'rgba(61, 206, 206, 0.15)',
+    },
+    {
+        id: 'volume_seasonality',
+        icon: '📉',
+        label: 'Vol. Seasonality',
+        activeColor: '#ff9800',
+        activeBg: 'rgba(255, 152, 0, 0.15)',
     },
 ];
 

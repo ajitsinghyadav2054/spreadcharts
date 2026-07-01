@@ -124,8 +124,7 @@ export async function processRatioImage(imagePath) {
                                 await dbClient.query(`
                                     INSERT INTO cocoa_product_ratios (date, category, region_product, ratio_value)
                                     VALUES ($1, $2, $3, $4)
-                                    ON CONFLICT (date, category, region_product) DO UPDATE SET
-                                        ratio_value = EXCLUDED.ratio_value
+                                    ON CONFLICT (date, category, region_product) DO NOTHING
                                 `, [dateStr, catName, region, val]);
                                 count++;
                                 console.log(`  → [${catName}] ${region}: ${val}  (parsed from: "${lineToParse}")`);

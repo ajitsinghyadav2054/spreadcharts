@@ -329,7 +329,8 @@ export default function SubChart({ id, chartRef, mainChartRef, seriesRef: extern
                                 borderRadius: '6px',
                                 zIndex: 100,
                                 boxShadow: '0 8px 24px rgba(0,0,0,0.5)',
-                                overflow: 'hidden',
+                                overflowY: 'auto',
+                                maxHeight: '300px',
                             }}>
                                 {TICKER_LIST.map((inst) => (
                                     <div

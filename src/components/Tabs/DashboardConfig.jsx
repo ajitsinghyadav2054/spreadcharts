@@ -179,6 +179,7 @@ export default function DashboardConfig({ tabId }) {
                                 value={config.selection}
                                 onChange={({ id, label }) => handleColumnSelect(idx, { id, label })}
                                 disabled={!product}
+                                product={product || undefined}
                             />
                         </div>
                         <div>

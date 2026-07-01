@@ -14,7 +14,11 @@ const initialState = {
         { id: 'tab-1', name: 'Chart 1', instrumentId: null, chartType: 'candlestick', sodSeries: null },
     ],
     activeTabId: 'tab-1',
-    activeSection: 'cftc',    // 'cftc' | 'sod' | 'cocoa'
+    iceTabs: [
+        { id: 'ice-tab-1', name: 'ICE Chart 1', instrumentId: null, chartType: 'candlestick', sodSeries: null },
+    ],
+    activeIceTabId: 'ice-tab-1',
+    activeSection: 'cftc',    // 'cftc' | 'ice_charts' | 'sod' | 'cocoa'
     sodDashboard: {           // SOD section owns its own state
         sodSeries: null,      // array of { columnId, label, yearlyData } once generated
     },
@@ -119,6 +123,63 @@ const uiSlice = createSlice({
             }
         },
 
+        // Set drawing mode (trendline, horizontal, or null to disable)
+        setDrawingMode(state, action) {
+            state.drawingMode = action.payload;
+        },
+
+        // ================= ICE TABS REDUCERS =================
+        addIceTab(state) {
+            const id = `ice-tab-${nextTabId++}`;
+            state.iceTabs.push({
+                id,
+                name: `ICE Chart ${state.iceTabs.length + 1}`,
+                instrumentId: null,
+                chartType: 'candlestick',
+                sodSeries: null,
+            });
+            state.activeIceTabId = id;
+        },
+        closeIceTab(state, action) {
+            const tabId = action.payload;
+            if (state.iceTabs.length <= 1) return;
+            const idx = state.iceTabs.findIndex((t) => t.id === tabId);
+            state.iceTabs.splice(idx, 1);
+            if (state.activeIceTabId === tabId) {
+                state.activeIceTabId = state.iceTabs[Math.max(0, idx - 1)].id;
+            }
+        },
+        setActiveIceTab(state, action) {
+            state.activeIceTabId = action.payload;
+        },
+        renameIceTab(state, action) {
+            const { tabId, name } = action.payload;
+            const tab = state.iceTabs.find((t) => t.id === tabId);
+            if (tab) tab.name = name;
+        },
+        setIceTabInstrument(state, action) {
+            const { tabId, instrumentId } = action.payload;
+            const tab = state.iceTabs.find((t) => t.id === tabId);
+            if (tab) {
+                tab.instrumentId = instrumentId;
+                tab.chartType = 'candlestick';
+                tab.series = null;
+            }
+        },
+        setIceTabMultiChart(state, action) {
+            const { tabId, series, product } = action.payload;
+            const tab = state.iceTabs.find((t) => t.id === tabId);
+            if (tab) {
+                tab.chartType = 'multiline';
+                tab.series = series;
+                tab.product = product || tab.product || '';
+                if (series.length > 0) {
+                    tab.instrumentId = series[0].id;
+                }
+            }
+        },
+        // =====================================================
+
         // Switch between top-level sections (CFTC vs SOD)
         setActiveSection(state, action) {
             state.activeSection = action.payload; // 'cftc' | 'sod'
@@ -171,6 +232,12 @@ export const {
     setTabInstrument,
     setTabMultiChart,
     setTabSodSeries,
+    addIceTab,
+    closeIceTab,
+    setActiveIceTab,
+    renameIceTab,
+    setIceTabInstrument,
+    setIceTabMultiChart,
     setActiveSection,
     setSodDashboard,
     setCocoaDashboard,
@@ -193,5 +260,7 @@ export const selectSidebarOpen = (state) => state.ui.sidebarOpen;
 export const selectDrawingMode = (state) => state.ui.drawingMode;
 export const selectPLCalculatorOpen = (state) => state.ui.plCalculatorOpen;
 export const selectComparisonInstruments = (state) => state.ui.comparisonInstruments;
+export const selectIceTabs = (state) => state.ui.iceTabs;
+export const selectActiveIceTabId = (state) => state.ui.activeIceTabId;
 
 export default uiSlice.reducer;

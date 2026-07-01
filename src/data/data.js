@@ -100,10 +100,19 @@ console.log('[Data] COFFEE C last values:', Object.entries(COFFEE_DATA).map(
 
 // ---- Futures Ticker OHLC Data (for sub-charts) ----
 const TICKERS = {
-    'KC': { name: 'Coffee', base: 250 },
+    'KC': { name: 'Coffee C', base: 250 },
     'CC': { name: 'Cocoa', base: 8000 },
-    'CT': { name: 'Cotton', base: 70 },
-    'SB': { name: 'Sugar', base: 22 },
+    'CT': { name: 'Cotton No. 2', base: 70 },
+    'SG': { name: 'Sugar No. 11', base: 22 },
+    'C': { name: 'London Cocoa', base: 2500 },
+    'RC': { name: 'Robusta Coffee', base: 4500 },
+    'W': { name: 'White Sugar', base: 600 },
+    'DC': { name: 'Milk Class III', base: 20 },
+    'OJ': { name: 'Orange Juice', base: 300 },
+    'CSC': { name: 'Cheese (Cash Settled)', base: 2 },
+    'ZR': { name: 'Rough Rice', base: 18 },
+    'LBR': { name: 'Lumber', base: 600 },
+    'OTS': { name: 'Oats', base: 400 },
 };
 
 const TRADING_DAYS = 260;

@@ -134,6 +134,7 @@ export default function CftcQuickSelector({ tab }) {
                             value={currentMetricId}
                             onChange={(selection) => handleSlotChange(i, selection)}
                             disabled={isDisabled}
+                            product={product || undefined}
                         />
                     </div>
                 );

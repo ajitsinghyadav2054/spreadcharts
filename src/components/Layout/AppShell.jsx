@@ -3,9 +3,17 @@ import Sidebar from './Sidebar';
 import Header from './Header';
 import TabBar from '../Tabs/TabBar';
 import TabPanel from '../Tabs/TabPanel';
+import IceTabBar from '../Tabs/IceTabBar';
+import IceTabPanel from '../Tabs/IceTabPanel';
+import OpeningVariationDashboard from '../Tabs/OpeningVariationDashboard';
 import SodDashboard from '../Tabs/SodDashboard';
 import CocoaDashboard from '../Tabs/CocoaDashboard';
 import OIDashboard from '../Tabs/OIDashboard';
+import HistoricOIDashboard from '../Tabs/HistoricOIDashboard';
+import RollingCorrelationDashboard from '../Tabs/RollingCorrelationDashboard';
+import VolSeasonalityDashboard from '../Tabs/VolSeasonalityDashboard';
+import CftcWeeklyDashboard from '../Tabs/CftcWeeklyDashboard';
+import IceDashboard from '../Tabs/IceDashboard';
 import { selectActiveSection } from '../../features/ui/uiSlice';
 
 // ============================================================
@@ -46,12 +54,48 @@ export default function AppShell() {
                 {activeSection === 'cocoa' ? (
                     /* ── Cocoa Section ── */
                     <CocoaDashboard />
+                ) : activeSection === 'opening_variation' ? (
+                    /* ── Opening Variation Section ── */
+                    <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', width: '100%' }}>
+                        <OpeningVariationDashboard />
+                    </div>
                 ) : activeSection === 'sod' ? (
                     /* ── SOD Section ── */
                     <SodDashboard />
                 ) : activeSection === 'oi' ? (
-                    /* ── OI Screener Section ── */
+                    /* ── Daily OI Screener Section ── */
                     <OIDashboard />
+                ) : activeSection === 'historic_oi' ? (
+                    /* ── Historic OI Section ── */
+                    <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', width: '100%' }}>
+                        <HistoricOIDashboard />
+                    </div>
+                ) : activeSection === 'rolling_correlation' ? (
+                    /* ── Rolling Correlation (rho Monitor) Section ── */
+                    <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', width: '100%' }}>
+                        <RollingCorrelationDashboard />
+                    </div>
+                ) : activeSection === 'volume_seasonality' ? (
+                    /* ── Volume Seasonality Section ── */
+                    <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', width: '100%' }}>
+                        <VolSeasonalityDashboard />
+                    </div>
+                ) : activeSection === 'cftc_weekly' ? (
+                    /* ── Change in CFTC weekly table ── */
+                    <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', width: '100%' }}>
+                        <CftcWeeklyDashboard />
+                    </div>
+                ) : activeSection === 'ice' ? (
+                    /* ── Change in ICE weekly table ── */
+                    <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', width: '100%' }}>
+                        <IceDashboard />
+                    </div>
+                ) : activeSection === 'ice_charts' ? (
+                    /* ── ICE Charts Section ── */
+                    <>
+                        <IceTabBar />
+                        <IceTabPanel />
+                    </>
                 ) : (
                     /* ── CFTC Section (default) ── */
                     <>

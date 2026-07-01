@@ -97,26 +97,54 @@ function InDepthView({ data, selectedGroupCode, onSelectGroupCode }) {
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', maxWidth: '900px' }}>
             {/* Pill Tabs for Products */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                {data.groups.map(g => (
-                    <button
-                        key={g.code}
-                        onClick={() => onSelectGroupCode(g.code)}
-                        style={{
-                            padding: '6px 14px',
-                            background: selectedGroupCode === g.code ? '#e0e0e0' : 'transparent',
-                            color: selectedGroupCode === g.code ? '#1a1a2e' : '#a0a0c0',
-                            border: `1px solid ${selectedGroupCode === g.code ? '#e0e0e0' : '#4a4a6a'}`,
-                            borderRadius: '16px',
-                            fontSize: '12px',
-                            fontWeight: 600,
-                            cursor: 'pointer',
-                            transition: 'all 0.2s ease',
-                        }}
-                    >
-                        {g.code} - {g.name}
-                    </button>
-                ))}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {/* Cocoa Category Pills */}
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center' }}>
+                    <span style={{ fontSize: '11px', fontWeight: 700, color: '#8a8aaa', marginRight: '4px', textTransform: 'uppercase' }}>Cocoa:</span>
+                    {data.groups.filter(g => g.category === 'Cocoa').map(g => (
+                        <button
+                            key={g.code}
+                            onClick={() => onSelectGroupCode(g.code)}
+                            style={{
+                                padding: '6px 14px',
+                                background: selectedGroupCode === g.code ? '#e0e0e0' : 'transparent',
+                                color: selectedGroupCode === g.code ? '#1a1a2e' : '#a0a0c0',
+                                border: `1px solid ${selectedGroupCode === g.code ? '#e0e0e0' : '#4a4a6a'}`,
+                                borderRadius: '16px',
+                                fontSize: '12px',
+                                fontWeight: 600,
+                                cursor: 'pointer',
+                                transition: 'all 0.2s ease',
+                            }}
+                        >
+                            {g.code === 'ALL' ? 'All Cocoa' : `${g.code} - ${g.name}`}
+                        </button>
+                    ))}
+                </div>
+
+                {/* Other Products Category Pills */}
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center' }}>
+                    <span style={{ fontSize: '11px', fontWeight: 700, color: '#8a8aaa', marginRight: '4px', textTransform: 'uppercase' }}>Other:</span>
+                    {data.groups.filter(g => g.category !== 'Cocoa').map(g => (
+                        <button
+                            key={g.code}
+                            onClick={() => onSelectGroupCode(g.code)}
+                            style={{
+                                padding: '6px 14px',
+                                background: selectedGroupCode === g.code ? '#e0e0e0' : 'transparent',
+                                color: selectedGroupCode === g.code ? '#1a1a2e' : '#a0a0c0',
+                                border: `1px solid ${selectedGroupCode === g.code ? '#e0e0e0' : '#4a4a6a'}`,
+                                borderRadius: '16px',
+                                fontSize: '12px',
+                                fontWeight: 600,
+                                cursor: 'pointer',
+                                transition: 'all 0.2s ease',
+                            }}
+                        >
+                            {`${g.code} - ${g.name}`}
+                        </button>
+                    ))}
+                </div>
             </div>
 
             {/* Summaries */}
@@ -238,6 +266,47 @@ export default function OIDashboard() {
         try {
             const result = await fetchOIScreener();
             if (result.success) {
+                // Generate Synthetic "All Cocoa" Group before setting data
+                if (result.groups) {
+                    const cGroup = result.groups.find(g => g.code === 'C');
+                    const ccGroup = result.groups.find(g => g.code === 'CC');
+
+                    if (cGroup && ccGroup) {
+                        const allCocoaContracts = [];
+                        let allTotalOI = 0;
+                        let allNet = 0;
+
+                        cGroup.contracts.forEach(c1 => {
+                            if (c1.oi === null) return;
+                            const monthCode = c1.qhcode.slice(-3);
+                            const c2 = ccGroup.contracts.find(x => x.qhcode.slice(-3) === monthCode);
+
+                            if (c2 && c2.oi !== null) {
+                                const combinedOi = c1.oi + c2.oi;
+                                const combinedChange = (c1.change || 0) + (c2.change || 0);
+                                allTotalOI += combinedOi;
+                                allNet += combinedChange;
+
+                                allCocoaContracts.push({
+                                    qhcode: `ALL ${monthCode}`,
+                                    oi: combinedOi,
+                                    change: combinedChange
+                                });
+                            }
+                        });
+
+                        const insertIdx = result.groups.findIndex(g => g.code === 'CC') + 1;
+                        result.groups.splice(insertIdx, 0, {
+                            category: 'Cocoa',
+                            code: 'ALL',
+                            name: 'All Cocoa',
+                            contracts: allCocoaContracts,
+                            totalOI: allTotalOI,
+                            net: allNet
+                        });
+                    }
+                }
+
                 setData(result);
                 // Also default the selectedGroupCode to the first one available if not set
                 if (!selectedGroupCode && result.groups?.length > 0) {
@@ -333,10 +402,30 @@ export default function OIDashboard() {
                 ) : data && !error ? (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
                         {/* 1. Screener View (Top) */}
-                        <div className="oi-scroll" style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', overflowX: 'auto', paddingBottom: '20px' }}>
-                            {data.groups.map(group => (
-                                <GroupCard key={group.code} group={group} />
-                            ))}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                            {/* Cocoa Section */}
+                            <div>
+                                <div style={{ fontSize: '13px', fontWeight: 700, color: '#8a8aaa', letterSpacing: '0.05em', marginBottom: '8px', textTransform: 'uppercase' }}>
+                                    Cocoa
+                                </div>
+                                <div className="oi-scroll" style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', overflowX: 'auto', paddingBottom: '10px' }}>
+                                    {data.groups.filter(g => g.category === 'Cocoa').map(group => (
+                                        <GroupCard key={group.code} group={group} />
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Other Products Section */}
+                            <div>
+                                <div style={{ fontSize: '13px', fontWeight: 700, color: '#8a8aaa', letterSpacing: '0.05em', marginBottom: '8px', textTransform: 'uppercase' }}>
+                                    Other Products
+                                </div>
+                                <div className="oi-scroll" style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', overflowX: 'auto', paddingBottom: '20px' }}>
+                                    {data.groups.filter(g => g.category !== 'Cocoa').map(group => (
+                                        <GroupCard key={group.code} group={group} />
+                                    ))}
+                                </div>
+                            </div>
                         </div>
 
                         {/* 2. In-Depth View (Bottom) */}

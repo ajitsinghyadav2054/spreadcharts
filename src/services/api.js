@@ -41,6 +41,30 @@ export const fetchCftcData = async (params = {}) => {
     }
 };
 
+export const fetchIceData = async (params = {}) => {
+    const queryParams = new URLSearchParams();
+
+    if (params.market) queryParams.append('market', params.market);
+    if (params.limit) queryParams.append('limit', params.limit);
+    if (params.start_date) queryParams.append('start_date', params.start_date);
+    if (params.end_date) queryParams.append('end_date', params.end_date);
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/ice-data?${queryParams.toString()}`, {
+            headers: getAuthHeaders()
+        });
+        if (!response.ok) {
+            handleAuthError(response.status);
+            throw new Error(`API error: ${response.statusText}`);
+        }
+        const result = await response.json();
+        return result.data || [];
+    } catch (error) {
+        console.error('Failed to fetch ICE data:', error);
+        throw error;
+    }
+};
+
 export const fetchCocoaBagsData = async (seriesLabel, start = null, end = null, table = null) => {
     try {
         const query = new URLSearchParams();
@@ -189,6 +213,23 @@ export const fetchProducts = async () => {
     }
 };
 
+export const fetchIceProducts = async () => {
+    try {
+        const response = await fetch(`${API_BASE_URL}/ice-products`, {
+            headers: getAuthHeaders()
+        });
+        if (!response.ok) {
+            handleAuthError(response.status);
+            throw new Error('Failed to fetch ICE products');
+        }
+        const result = await response.json();
+        return result.data || [];
+    } catch (error) {
+        console.error('Error fetching ICE products:', error);
+        return [];
+    }
+};
+
 export const fetchColumns = async () => {
     try {
         const response = await fetch(`${API_BASE_URL}/columns`, {
@@ -221,4 +262,47 @@ export const fetchOIScreener = async () => {
         console.error('Failed to fetch OI screener data:', error);
         throw error;
     }
+};
+
+// ── Opening Variation ─────────────────────────────────────────────────────────
+
+export const fetchOpeningVariationData = async (filter = 'kc') => {
+    try {
+        const response = await fetch(`${API_BASE_URL}/opening-variation?filter=${filter}`, {
+            headers: getAuthHeaders(),
+        });
+        if (!response.ok) {
+            handleAuthError(response.status);
+            throw new Error(`API error: ${response.statusText}`);
+        }
+        const result = await response.json();
+        return result.data || [];
+    } catch (error) {
+        console.error('Failed to fetch Opening Variation data:', error);
+        throw error;
+    }
+};
+
+export const triggerOpeningVariationBackfill = async () => {
+    const response = await fetch(`${API_BASE_URL}/opening-variation/backfill`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+    });
+    if (!response.ok) {
+        handleAuthError(response.status);
+        throw new Error(`Backfill trigger failed: ${response.statusText}`);
+    }
+    return response.json();
+};
+
+export const triggerOpeningVariationRecompute = async () => {
+    const response = await fetch(`${API_BASE_URL}/opening-variation/recompute`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+    });
+    if (!response.ok) {
+        handleAuthError(response.status);
+        throw new Error(`Recompute trigger failed: ${response.statusText}`);
+    }
+    return response.json();
 };

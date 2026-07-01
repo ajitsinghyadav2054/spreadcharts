@@ -3,15 +3,22 @@
 // Each group maps to a product traded on the Hertshten API.
 //
 // qhcodes follow the convention: <ROOT><MONTH><2-digit-year>
-// Month codes: F=Jan, G=Feb, H=Mar, K=May, M=Jun, N=Jul, Q=Aug, U=Sep, V=Oct, X=Nov, Z=Dec
-// (Note: K=May for ICE/LIFFE contracts)
+// Month codes: F=Jan, G=Feb, H=Mar, J=Apr, K=May, M=Jun, N=Jul, Q=Aug, U=Sep, V=Oct, X=Nov, Z=Dec
 //
 // Data date note: Today's OI is typically null and only published the
 // FOLLOWING evening. The backend handles this by looking back 3–5 days
 // and picking the two most recent non-null OI readings to compute the change.
 
 export const OI_GROUPS = [
+    // ── Cocoa & Softs ──
     {
+        category: 'Cocoa',
+        code: 'ALL_COCOA',
+        name: 'All Cocoa',
+        contracts: [], // Synthetic group — built at runtime
+    },
+    {
+        category: 'Cocoa',
         code: 'C',
         name: 'London Cocoa',
         contracts: [
@@ -20,6 +27,7 @@ export const OI_GROUPS = [
         ],
     },
     {
+        category: 'Cocoa',
         code: 'CC',
         name: 'NY Cocoa',
         contracts: [
@@ -28,6 +36,7 @@ export const OI_GROUPS = [
         ],
     },
     {
+        category: 'Cocoa',
         code: 'KC',
         name: 'KC Arabica',
         contracts: [
@@ -37,6 +46,7 @@ export const OI_GROUPS = [
         ],
     },
     {
+        category: 'Cocoa',
         code: 'RC',
         name: 'Robusta',
         contracts: [
@@ -45,6 +55,7 @@ export const OI_GROUPS = [
         ],
     },
     {
+        category: 'Cocoa',
         code: 'CT',
         name: 'Cotton',
         contracts: [
@@ -53,6 +64,7 @@ export const OI_GROUPS = [
         ],
     },
     {
+        category: 'Cocoa',
         code: 'SB',
         name: 'Raw Sugar',
         contracts: [
@@ -62,12 +74,68 @@ export const OI_GROUPS = [
         ],
     },
     {
+        category: 'Cocoa',
         code: 'W',
         name: 'White Sugar',
         contracts: [
             'LSGK26', 'LSGQ26', 'LSGV26', 'LSGZ26',
             'LSGH27', 'LSGK27', 'LSGQ27', 'LSGV27', 'LSGZ27',
             'LSGH28', 'LSGK28', 'LSGQ28', 'LSGV28',
-        ]
-    }
+        ],
+    },
+
+    // ── Other Products ──
+    {
+        category: 'Other Products',
+        code: 'DC',
+        name: 'Milk Class III',
+        contracts: [
+            'DCH26', 'DCJ26', 'DCK26', 'DCM26', 'DCN26',
+            'DCQ26', 'DCU26', 'DCV26', 'DCX26', 'DCZ26',
+            'DCF27', 'DCG27', 'DCH27', 'DCJ27', 'DCK27',
+        ],
+    },
+    {
+        category: 'Other Products',
+        code: 'OJ',
+        name: 'Orange Juice',
+        contracts: [
+            'OJK26', 'OJN26', 'OJU26', 'OJX26',
+            'OJF27', 'OJH27', 'OJK27',
+        ],
+    },
+    {
+        category: 'Other Products',
+        code: 'CSC',
+        name: 'Cash Settled Cheese',
+        contracts: [
+            'CSCH26', 'CSCJ26', 'CSCK26', 'CSCM26', 'CSCN26',
+            'CSCQ26', 'CSCU26', 'CSCV26', 'CSCX26', 'CSCZ26',
+            'CSCF27', 'CSCG27', 'CSCH27', 'CSCJ27', 'CSCK27',
+        ],
+    },
+    {
+        category: 'Other Products',
+        code: 'ZR',
+        name: 'Rough Rice',
+        contracts: [
+            'ZRK26', 'ZRN26', 'ZRU26', 'ZRX26', 'ZRF27', 'ZRH27',
+        ],
+    },
+    {
+        category: 'Other Products',
+        code: 'LBR',
+        name: 'Lumber',
+        contracts: [
+            'LBRK26', 'LBRN26', 'LBRU26', 'LBRX26', 'LBRF27',
+        ],
+    },
+    {
+        category: 'Other Products',
+        code: 'OTS',
+        name: 'Oats',
+        contracts: [
+            'OTSK26', 'OTSN26', 'OTSU26', 'OTSZ26', 'OTSH27',
+        ],
+    },
 ];

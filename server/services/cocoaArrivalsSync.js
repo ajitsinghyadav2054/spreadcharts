@@ -13,7 +13,7 @@ const pool = new pg.Pool({
     ssl: { rejectUnauthorized: false }
 });
 
-export const COCOA_IVORY_ARRIVALS_FILE = "C:\\Users\\Ajit.yadav\\hertshtengroup.com\\Dinesh Chinnadurai - Cocoa\\Arrivals\\Cocoa Arrivals-Ivory coast.xlsx";
+export const COCOA_IVORY_ARRIVALS_FILE = "C:\\Users\\Ajit.yadav\\hertshtengroup.com\\Dinesh Chinnadurai - Cocoa\\Arrivals\\Ivory coast Arrivals.xlsx";
 
 export async function syncIvoryArrivals() {
     console.log('[Ivory Arrivals] Starting sync from Excel...');

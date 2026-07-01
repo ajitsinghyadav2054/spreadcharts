@@ -179,8 +179,9 @@ export default function CocoaMultiLineChart({ title, data }) {
         });
         chartRef.current = chart;
 
-        // Process data
-        const sortedData = [...data].sort((a, b) => a.trade_date.localeCompare(b.trade_date));
+        // Process data - use report_date_as_mm_dd_yyyy (what the API returns) with fallback to trade_date
+        const getDateKey = (row) => row.report_date_as_mm_dd_yyyy || row.trade_date || row.date || '';
+        const sortedData = [...data].sort((a, b) => getDateKey(a).localeCompare(getDateKey(b)));
 
         const newSeriesMap = {};
 
@@ -225,8 +226,7 @@ export default function CocoaMultiLineChart({ title, data }) {
             });
 
             const points = sortedData.map(d => {
-                const rawTime = typeof d.trade_date === 'string' ? d.trade_date.split('T')[0]
-                    : (d.report_date_as_mm_dd_yyyy ? d.report_date_as_mm_dd_yyyy.split('T')[0] : d.trade_date);
+                const rawTime = getDateKey(d).split('T')[0];
                 const timeStamp = dateStringToTimestamp(rawTime);
                 const val = parseFloat(d[col]);
                 return {

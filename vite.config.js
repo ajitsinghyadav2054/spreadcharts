@@ -9,7 +9,17 @@ export default defineConfig({
         tailwindcss(),
     ],
     server: {
-        host: '10.132.30.182',
+        host: '0.0.0.0',       // Listen on ALL interfaces so cloudflared can reach it
         port: 5173,
+        allowedHosts: true,    // Allow any host (Cloudflare, ngrok, etc.)
+        proxy: {
+            // Forward all /api/* requests to the Express backend
+            '/api': {
+                target: 'http://localhost:3002',
+                changeOrigin: true,
+                secure: false,
+            }
+        }
     }
 })
+

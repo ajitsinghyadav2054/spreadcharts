@@ -2,10 +2,10 @@
  * Aggregates daily OHLC data into weekly candles using UTC.
  * 
  * @param {Array} dailyData - Array of daily OHLC candles { time, open, high, low, close }
- * @param {boolean} weekStartsOnMonday - If true, Monday is the first day of the week (default).
+ * @param {boolean} weekStartsOnWednesday - If true, the week groups from Wednesday to Tuesday (default).
  * @returns {Array} Weekly OHLC candles.
  */
-export function aggregateToWeekly(dailyData, weekStartsOnMonday = true) {
+export function aggregateToWeekly(dailyData, weekStartsOnWednesday = true) {
     if (!dailyData || dailyData.length === 0) return [];
 
     // Sort by time first to be safe
@@ -21,27 +21,31 @@ export function aggregateToWeekly(dailyData, weekStartsOnMonday = true) {
         // Get UTC day: 0 (Sun) to 6 (Sat)
         const utcDay = date.getUTCDay();
 
-        // Find how many days to subtract to get to the start of the week
         let daysToSubtract = 0;
-        if (weekStartsOnMonday) {
-            // Monday is 1. If today is Sunday (0), we go back 6 days.
-            daysToSubtract = utcDay === 0 ? 6 : utcDay - 1;
+
+        if (weekStartsOnWednesday) {
+            // Group the week starting on Wednesday and ending on Tuesday.
+            // 0=Sun, 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri, 6=Sat
+            // We want Wed -> 0, Thu -> 1, Fri -> 2, Sat -> 3, Sun -> 4, Mon -> 5, Tue -> 6
+            daysToSubtract = (utcDay + 4) % 7;
         } else {
-            // Sunday is 0.
-            daysToSubtract = utcDay;
+            // Old Monday logic
+            daysToSubtract = utcDay === 0 ? 6 : utcDay - 1;
         }
 
-        // Create a new date at UTC midnight of that Monday/Sunday
+        // Create a new date at UTC midnight of the start of the timeframe
         let weekStartUtc = Date.UTC(
             date.getUTCFullYear(),
             date.getUTCMonth(),
             date.getUTCDate() - daysToSubtract
         );
 
-        // ALIGNMENT FIX: Shift weekly OHLC candles to Tuesday (Monday + 1 day)
-        // to match the COT data reporting day on the main chart.
-        if (weekStartsOnMonday) {
-            weekStartUtc += 86400 * 1000; // Add 24 hours
+        // Remove the shift to Tuesday so the timestamp is stamped precisely on Wednesday,
+        // which makes Lightweight Charts accurately reflect the candle's START day as Wednesday.
+        if (!weekStartsOnWednesday) {
+            // Old Monday logic: still stamp as Monday (or shifted) if needed.
+            // But since weekStartsOnWednesday is true by default, it will stay on Wednesday.
+            weekStartUtc += 1 * 86400 * 1000;
         }
 
         const key = Math.floor(weekStartUtc / 1000); // Unix timestamp (sec)

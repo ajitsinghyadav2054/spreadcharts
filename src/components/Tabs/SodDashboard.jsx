@@ -183,6 +183,7 @@ export default function SodDashboard() {
                             value={sodSeries[0]?.columnId || ''}
                             onChange={handleColumnChange}
                             disabled={isGenerating}
+                            product={product || undefined}
                         />
                     </div>
                     <div style={{ marginLeft: 'auto', display: 'flex', gap: '8px' }}>
@@ -251,6 +252,7 @@ export default function SodDashboard() {
                     value={configs[0].selection}
                     onChange={({ id, label }) => handleColumnSelect(0, { id, label })}
                     disabled={!product}
+                    product={product || undefined}
                 />
             </div>
 
